@@ -6,6 +6,7 @@ import { ConfigModule } from "@nestjs/config";
 import { TracksModule } from './tracks/tracks.module';
 import { FileModule } from './file/file.module';
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { AlbumModule } from './album/album.module';
 import * as path from "path";
 
 
@@ -18,7 +19,8 @@ import * as path from "path";
     FileModule,
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
-    }),],
+    }),
+    AlbumModule,],
   controllers: [AppController],
   providers: [AppService],
 })
