@@ -16,14 +16,19 @@ export class TracksService {
               private fileService: FileService) {}
 
   async getFilteredTracks(query:FindTracksDto): Promise<Track[]> {
-    const filter: any = {};
+    const limit=query.count??5
+    const offset=query.offset??0
+    const filter: any = {} ;
+    if(query.artist){
+      filter.artist={$regex:query.artist}
+    }
     if (query.name) {
       filter.name={$regex:query.name}
     }
     if (query.listens){
-      return this.tracksModel.find(filter).sort({listens:query.listens}).exec()
+      return this.tracksModel.find(filter).skip(offset).limit(limit).sort({listens:query.listens}).exec()
     }
-    return this.tracksModel.find(filter).exec()
+    return this.tracksModel.find(filter).skip(offset).limit(limit).exec()
   }
 
   async getTracksById(id:ObjectId):Promise<Track>{
@@ -55,5 +60,11 @@ export class TracksService {
     return comment;
   }
 
+  async incListen(id:ObjectId):Promise<Track>{
+    const track=await this.tracksModel.findById(id)
+    track.listens=track.listens+1
+    await track.save()
+    return track
+  }
 
 }

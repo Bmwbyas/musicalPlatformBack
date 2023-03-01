@@ -22,6 +22,7 @@ export class TracksController {
   // @Roles("ADMIN")
   @Get()
   async getFilterTracks(@Query() query: FindTracksDto) {
+
     return this.tracksService.getFilteredTracks(query);
   }
 
@@ -46,8 +47,8 @@ export class TracksController {
   async createTrack(@Body() dto: CreateTrackDto,
                     @UploadedFiles() files: { audio?: Express.Multer.File[], image?: Express.Multer.File[] }
   ): Promise<Track> {
-    const {audio,image}=files
-    return this.tracksService.createTrack(dto, audio[0],image[0]);
+    const { audio, image } = files;
+    return this.tracksService.createTrack(dto, audio[0], image[0]);
   }
 
   @ApiOperation({ summary: "delete track" })
@@ -80,5 +81,13 @@ export class TracksController {
     return this.tracksService.addComment(dto);
   }
 
+  @ApiOperation({ summary: "create comment" })
+  @ApiResponse({ status: 201, type: Comment })
+// @UseGuards(JwtAuthGuard)
+// @Roles("ADMIN")
+  @Post("/listens/:id")
+  async incListen(@Param('id') id:ObjectId):Promise<Track> {
+    return this.tracksService.incListen(id)
+  }
 
 }
